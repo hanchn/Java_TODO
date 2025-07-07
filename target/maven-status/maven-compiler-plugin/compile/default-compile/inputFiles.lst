@@ -1,0 +1,9 @@
+/Users/yuanjing/Desktop/Java_TODO/src/main/java/com/example/studentmanagement/StudentManagementApplication.java
+/Users/yuanjing/Desktop/Java_TODO/src/main/java/com/example/studentmanagement/controller/StudentController.java
+/Users/yuanjing/Desktop/Java_TODO/src/main/java/com/example/studentmanagement/exception/GlobalExceptionHandler.java
+/Users/yuanjing/Desktop/Java_TODO/src/main/java/com/example/studentmanagement/repository/StudentRepository.java
+/Users/yuanjing/Desktop/Java_TODO/src/main/java/com/example/studentmanagement/service/impl/StudentServiceImpl.java
+/Users/yuanjing/Desktop/Java_TODO/src/main/java/com/example/studentmanagement/service/StudentService.java
+/Users/yuanjing/Desktop/Java_TODO/src/main/java/com/example/studentmanagement/entity/Student.java
+/Users/yuanjing/Desktop/Java_TODO/src/main/java/com/example/studentmanagement/dto/StudentDTO.java
+/Users/yuanjing/Desktop/Java_TODO/src/main/java/com/example/studentmanagement/dto/ApiResponse.java
