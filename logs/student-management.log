@@ -472,3 +472,10 @@ INSERT INTO students (name, student_number, age, gender, major, email, phone, en
 2025-07-07 14:44:48 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
 2025-07-07 14:44:48 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ApiResponse{code=200, message='获取统计信息成功', data={countByMajor={人工智能=2, 信息安全=2, 软件工程=2, 数据科学与大数据技术=2,  (truncated)...]
 2025-07-07 14:44:48 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-07 14:54:11 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07 14:54:11 [SpringApplicationShutdownHook] INFO  o.h.t.s.i.SchemaDropperImpl$DelayedDropActionImpl - HHH000477: Starting delayed evictData of schema as part of SessionFactory shut-down'
+2025-07-07 14:54:11 [SpringApplicationShutdownHook] DEBUG org.hibernate.SQL - 
+    
+    drop table if exists students CASCADE 
+2025-07-07 14:54:11 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-07-07 14:54:11 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
