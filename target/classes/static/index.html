@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #4facfe;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-container input, .search-container select {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 学生管理系统</h1>
+            <p>基于Spring Boot的现代化学生信息管理平台</p>
+        </div>
+
+        <div class="content">
+            <!-- 统计信息 -->
+            <div class="stats" id="stats">
+                <div class="stat-card">
+                    <h3 id="totalCount">0</h3>
+                    <p>学生总数</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="maleCount">0</h3>
+                    <p>男学生</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="femaleCount">0</h3>
+                    <p>女学生</p>
+                </div>
+            </div>
+
+            <!-- 消息提示 -->
+            <div id="message" style="display: none;"></div>
+
+            <!-- 添加学生表单 -->
+            <div class="section">
+                <h2>➕ 添加学生</h2>
+                <form id="studentForm">
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="name">姓名 *</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="studentNumber">学号 *</label>
+                            <input type="text" id="studentNumber" name="studentNumber" required pattern="[0-9]{8,12}" title="请输入8-12位数字">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="age">年龄 *</label>
+                            <input type="number" id="age" name="age" required min="16" max="30">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="gender">性别 *</label>
+                            <select id="gender" name="gender" required>
+                                <option value="">请选择</option>
+                                <option value="男">男</option>
+                                <option value="女">女</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="major">专业 *</label>
+                            <select id="major" name="major" required>
+                                <option value="">请选择</option>
+                                <option value="计算机科学与技术">计算机科学与技术</option>
+                                <option value="软件工程">软件工程</option>
+                                <option value="信息安全">信息安全</option>
+                                <option value="数据科学与大数据技术">数据科学与大数据技术</option>
+                                <option value="人工智能">人工智能</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="email">邮箱</label>
+                            <input type="email" id="email" name="email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">手机号</label>
+                        <input type="tel" id="phone" name="phone" pattern="1[3-9]\d{9}" title="请输入正确的手机号">
+                    </div>
+                    <button type="submit" class="btn">添加学生</button>
+                    <button type="button" class="btn btn-warning" onclick="resetForm()">重置表单</button>
+                </form>
+            </div>
+
+            <!-- 搜索和筛选 -->
+            <div class="section">
+                <h2>🔍 搜索学生</h2>
+                <div class="search-container">
+                    <input type="text" id="searchName" placeholder="按姓名搜索...">
+                    <select id="searchMajor">
+                        <option value="">所有专业</option>
+                        <option value="计算机科学与技术">计算机科学与技术</option>
+                        <option value="软件工程">软件工程</option>
+                        <option value="信息安全">信息安全</option>
+                        <option value="数据科学与大数据技术">数据科学与大数据技术</option>
+                        <option value="人工智能">人工智能</option>
+                    </select>
+                    <select id="searchGender">
+                        <option value="">所有性别</option>
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                    </select>
+                    <button class="btn" onclick="searchStudents()">搜索</button>
+                    <button class="btn btn-warning" onclick="clearSearch()">清空</button>
+                </div>
+            </div>
+
+            <!-- 学生列表 -->
+            <div class="section">
+                <h2>📋 学生列表</h2>
+                <button class="btn" onclick="loadStudents()">刷新列表</button>
+                <div class="table-container">
+                    <table id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>姓名</th>
+                                <th>学号</th>
+                                <th>年龄</th>
+                                <th>性别</th>
+                                <th>专业</th>
+                                <th>邮箱</th>
+                                <th>手机号</th>
+                                <th>入学日期</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <!-- 学生数据将在这里动态加载 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/students';
+        let editingStudentId = null;
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStudents();
+            loadStatistics();
+            
+            // 绑定表单提交事件
+            document.getElementById('studentForm').addEventListener('submit', handleFormSubmit);
+        });
+
+        // 显示消息
+        function showMessage(message, type = 'success') {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // 处理表单提交
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const studentData = {
+                name: formData.get('name'),
+                studentNumber: formData.get('studentNumber'),
+                age: parseInt(formData.get('age')),
+                gender: formData.get('gender'),
+                major: formData.get('major'),
+                email: formData.get('email') || null,
+                phone: formData.get('phone') || null
+            };
+
+            try {
+                let response;
+                if (editingStudentId) {
+                    // 更新学生
+                    response = await fetch(`${API_BASE}/${editingStudentId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(studentData)
+                    });
+                } else {
+                    // 添加学生
+                    response = await fetch(API_BASE, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(studentData)
+                    });
+                }
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMessage(result.message, 'success');
+                    resetForm();
+                    loadStudents();
+                    loadStatistics();
+                } else {
+                    showMessage(result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('操作失败: ' + error.message, 'error');
+            }
+        }
+
+        // 加载学生列表
+        async function loadStudents() {
+            try {
+                const response = await fetch(API_BASE);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    displayStudents(result.data);
+                } else {
+                    showMessage('加载学生列表失败: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('加载学生列表失败: ' + error.message, 'error');
+            }
+        }
+
+        // 显示学生列表
+        function displayStudents(students) {
+            const tbody = document.getElementById('studentsTableBody');
+            tbody.innerHTML = '';
+            
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.studentNumber}</td>
+                    <td>${student.age}</td>
+                    <td>${student.gender}</td>
+                    <td>${student.major}</td>
+                    <td>${student.email || '-'}</td>
+                    <td>${student.phone || '-'}</td>
+                    <td>${student.enrollmentDate || '-'}</td>
+                    <td>
+                        <button class="btn" onclick="editStudent(${student.id})">编辑</button>
+                        <button class="btn btn-danger" onclick="deleteStudent(${student.id})">删除</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // 编辑学生
+        async function editStudent(id) {
+            try {
+                const response = await fetch(`${API_BASE}/${id}`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    const student = result.data;
+                    
+                    // 填充表单
+                    document.getElementById('name').value = student.name;
+                    document.getElementById('studentNumber').value = student.studentNumber;
+                    document.getElementById('age').value = student.age;
+                    document.getElementById('gender').value = student.gender;
+                    document.getElementById('major').value = student.major;
+                    document.getElementById('email').value = student.email || '';
+                    document.getElementById('phone').value = student.phone || '';
+                    
+                    editingStudentId = id;
+                    
+                    // 滚动到表单
+                    document.getElementById('studentForm').scrollIntoView({ behavior: 'smooth' });
+                    
+                    showMessage('请修改学生信息后提交', 'success');
+                } else {
+                    showMessage('获取学生信息失败: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('获取学生信息失败: ' + error.message, 'error');
+            }
+        }
+
+        // 删除学生
+        async function deleteStudent(id) {
+            if (!confirm('确定要删除这个学生吗？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/${id}`, {
+                    method: 'DELETE'
+                });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMessage(result.message, 'success');
+                    loadStudents();
+                    loadStatistics();
+                } else {
+                    showMessage('删除失败: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('删除失败: ' + error.message, 'error');
+            }
+        }
+
+        // 搜索学生
+        async function searchStudents() {
+            const name = document.getElementById('searchName').value;
+            const major = document.getElementById('searchMajor').value;
+            const gender = document.getElementById('searchGender').value;
+            
+            const params = new URLSearchParams();
+            if (name) params.append('name', name);
+            if (major) params.append('major', major);
+            if (gender) params.append('gender', gender);
+            
+            try {
+                const response = await fetch(`${API_BASE}/search?${params}`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    displayStudents(result.data.content);
+                    showMessage(`找到 ${result.data.content.length} 个学生`, 'success');
+                } else {
+                    showMessage('搜索失败: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('搜索失败: ' + error.message, 'error');
+            }
+        }
+
+        // 清空搜索
+        function clearSearch() {
+            document.getElementById('searchName').value = '';
+            document.getElementById('searchMajor').value = '';
+            document.getElementById('searchGender').value = '';
+            loadStudents();
+        }
+
+        // 重置表单
+        function resetForm() {
+            document.getElementById('studentForm').reset();
+            editingStudentId = null;
+        }
+
+        // 加载统计信息
+        async function loadStatistics() {
+            try {
+                const response = await fetch(`${API_BASE}/statistics`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    const stats = result.data;
+                    document.getElementById('totalCount').textContent = stats.totalCount;
+                    document.getElementById('maleCount').textContent = stats.countByGender['男'] || 0;
+                    document.getElementById('femaleCount').textContent = stats.countByGender['女'] || 0;
+                }
+            } catch (error) {
+                console.error('加载统计信息失败:', error);
+            }
+        }
+    </script>
+</body>
+</html>
