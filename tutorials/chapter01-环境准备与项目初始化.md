@@ -29,19 +29,273 @@ java -version
 # 检查编译器版本
 javac -version
 
-# 查看JAVA_HOME环境变量
+# 查看JAVA_HOME环境变量（Mac/Linux）
 echo $JAVA_HOME
+
+# 如果JAVA_HOME未设置，可以通过以下命令查找Java安装路径（Mac）
+/usr/libexec/java_home
+
+# 查看所有已安装的Java版本（Mac）
+/usr/libexec/java_home -V
+
+# 查看当前使用的Java路径
+which java
+
+# 查看Java相关的所有环境变量
+env | grep -i java
 ```
 
 **要求**：JDK 8或更高版本
 
+### 配置环境变量
+
+#### Mac系统配置JAVA_HOME
+
+1. **查找Java安装路径**：
+```bash
+# 获取当前Java安装路径
+/usr/libexec/java_home
+
+# 查看所有Java版本及路径
+/usr/libexec/java_home -V
+
+# 指定特定版本的路径
+/usr/libexec/java_home -v 17
+```
+
+2. **设置环境变量**：
+
+**方法一：使用zsh（macOS Catalina及以后默认）**
+```bash
+# 编辑zsh配置文件
+vim ~/.zshrc
+
+# 添加以下内容
+export JAVA_HOME=$(/usr/libexec/java_home)
+export PATH=$JAVA_HOME/bin:$PATH
+
+# 重新加载配置
+source ~/.zshrc
+```
+
+**方法二：使用bash**
+```bash
+# 编辑bash配置文件
+vim ~/.bash_profile
+
+# 添加以下内容
+export JAVA_HOME=$(/usr/libexec/java_home)
+export PATH=$JAVA_HOME/bin:$PATH
+
+# 重新加载配置
+source ~/.bash_profile
+```
+
+**方法三：指定特定Java版本**
+```bash
+# 在配置文件中指定Java 17
+export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+export PATH=$JAVA_HOME/bin:$PATH
+```
+
+#### Linux系统配置JAVA_HOME
+
+```bash
+# 查找Java安装路径
+which java
+ls -la $(which java)
+
+# 编辑环境变量文件
+vim ~/.bashrc
+
+# 添加以下内容（根据实际Java安装路径修改）
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+export PATH=$JAVA_HOME/bin:$PATH
+
+# 重新加载配置
+source ~/.bashrc
+```
+
+#### 验证环境变量配置
+
+配置完成后，重新打开终端或执行source命令，然后验证：
+
+```bash
+# 验证JAVA_HOME是否正确设置
+echo $JAVA_HOME
+
+# 验证Java命令是否可用
+java -version
+javac -version
+
+# 验证PATH是否包含Java
+echo $PATH | grep java
+```
+
+#### Mac系统Java版本管理
+
+如果你的Mac上安装了多个Java版本，可以使用以下方法管理：
+
+```bash
+# 查看所有已安装的Java版本
+/usr/libexec/java_home -V
+
+# 临时切换到Java 8
+export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+
+# 临时切换到Java 11
+export JAVA_HOME=$(/usr/libexec/java_home -v 11)
+
+# 临时切换到Java 17
+export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+
+# 查看当前使用的Java版本
+java -version
+```
+
+**小贴士**：
+- 在Mac上，`/usr/libexec/java_home` 是Apple提供的用于管理Java版本的工具
+- 使用 `$(/usr/libexec/java_home)` 可以动态获取当前默认Java版本的路径
+- 如果需要在不同项目中使用不同Java版本，建议使用jenv等版本管理工具
+
 #### 2. Maven安装与配置
 ```bash
-# 检查Maven版本
+# 查看Maven版本
 mvn -version
 
 # 查看Maven配置
 mvn help:system
+```
+
+#### 常见问题解决
+
+**问题1：JAVA_HOME环境变量未定义**
+
+如果运行 `mvn -version` 时出现以下错误：
+```
+The JAVA_HOME environment variable is not defined correctly,
+this environment variable is needed to run this program.
+```
+
+**解决方案**：
+
+1. **检查JAVA_HOME是否设置**：
+```bash
+echo $JAVA_HOME
+```
+
+2. **如果输出为空，按照前面的步骤设置JAVA_HOME**：
+```bash
+# Mac系统
+export JAVA_HOME=$(/usr/libexec/java_home)
+echo $JAVA_HOME
+
+# 验证设置是否成功
+java -version
+mvn -version
+```
+
+3. **永久设置（添加到配置文件）**：
+```bash
+# 对于zsh用户（macOS默认）
+echo 'export JAVA_HOME=$(/usr/libexec/java_home)' >> ~/.zshrc
+echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.zshrc
+source ~/.zshrc
+
+# 对于bash用户
+echo 'export JAVA_HOME=$(/usr/libexec/java_home)' >> ~/.bash_profile
+echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bash_profile
+source ~/.bash_profile
+```
+
+4. **验证配置**：
+```bash
+# 重新打开终端，然后验证
+echo $JAVA_HOME
+java -version
+mvn -version
+```
+
+**问题2：Maven命令未找到**
+
+如果出现 `mvn: command not found` 错误：
+
+1. **检查Maven是否正确安装**：
+```bash
+which mvn
+echo $PATH | grep maven
+```
+
+2. **重新设置Maven PATH**：
+```bash
+# 找到Maven安装目录
+ls -la /usr/local/bin/mvn
+
+# 如果使用Homebrew安装
+brew list maven
+
+# 添加Maven到PATH
+export PATH=/usr/local/apache-maven-3.9.0/bin:$PATH
+```
+
+**问题3：权限问题**
+
+如果遇到权限相关错误：
+
+```bash
+# 检查文件权限
+ls -la ~/.zshrc
+ls -la ~/.bash_profile
+
+# 如果需要，修改权限
+chmod 644 ~/.zshrc
+chmod 644 ~/.bash_profile
+```
+
+#### 环境验证清单
+
+完成环境配置后，请按以下清单验证：
+
+```bash
+# ✅ 1. 验证Java安装
+java -version
+# 应该显示Java版本信息
+
+# ✅ 2. 验证Java编译器
+javac -version
+# 应该显示javac版本信息
+
+# ✅ 3. 验证JAVA_HOME
+echo $JAVA_HOME
+# 应该显示Java安装路径
+
+# ✅ 4. 验证Maven安装
+mvn -version
+# 应该显示Maven版本和Java信息
+
+# ✅ 5. 验证Maven能找到Java
+mvn help:system | grep java.home
+# 应该显示Java路径
+
+# ✅ 6. 测试简单Maven命令
+mvn help:evaluate -Dexpression=maven.version -q -DforceStdout
+# 应该显示Maven版本号
+```
+
+**预期输出示例**：
+```
+$ java -version
+openjdk version "17.0.2" 2022-01-18
+OpenJDK Runtime Environment (build 17.0.2+8-Ubuntu-120.04)
+OpenJDK 64-Bit Server VM (build 17.0.2+8-Ubuntu-120.04, mixed mode, sharing)
+
+$ mvn -version
+Apache Maven 3.9.0 (9b58d2bad23a66be161c4664ef21ce219c2c8584)
+Maven home: /usr/local/apache-maven-3.9.0
+Java version: 17.0.2, vendor: Eclipse Adoptium
+Java home: /Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home
+Default locale: en_US, platform encoding: UTF-8
+OS name: "mac os x", version: "12.6", arch: "x86_64", family: "mac"
 ```
 
 **要求**：Maven 3.6或更高版本
